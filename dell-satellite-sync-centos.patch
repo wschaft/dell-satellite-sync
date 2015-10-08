@@ -1,0 +1,39 @@
+--- a/dell-satellite-sync.py    2014-11-21 01:50:39.000000000 +0100
++++ b/dell-satellite-sync.py    2015-10-08 14:01:43.309392619 +0200
+@@ -56,7 +56,7 @@
+ parser.add_option("-s", "--satserver", dest="satserver", help="FQDN of Satellite server", default=SATELLITE_SERVER)
+ parser.add_option("-S", "--server-actions-only", action="store_true", dest="server_actions_only", help="Create channels and upload RPMs, skip system subscriptions.", default=False)
+ parser.add_option("-r", "--repo", dest="repo", help="Location of Dell yum repositories. Defaults to 'http://linux.dell.com/repo/hardware/latest'", default=REPO)
+-parser.add_option("-c", "--channel", dest="channel", help="OS parent channel to use. e.g. 'rhel4', 'rhel5', 'rhel6' or 'sles11'", default=CHANNEL)
++parser.add_option("-c", "--channel", dest="channel", help="OS parent channel to use. e.g. 'rhel4', 'rhel5', 'rhel6' or 'sles11' or 'centos6', 'centos7',", default=CHANNEL)
+ parser.add_option("-o", "--only-systems", dest="only_systems", help="Create system-specific channels ONLY for these systems. e.g. 'per720,per620,pet620'", default=ONLY_SYSTEMS)
+ parser.add_option("-a", "--all-systems", action="store_true", dest="all_systems", help="Create system-specific channels for ALL supported Dell systems.", default=False)
+ parser.add_option("-d", "--delete", action="store_true", dest="delete", help="Delete all unused Dell channels / packages for given OS parent channel.", default=False)
+@@ -88,7 +88,7 @@
+        if options.repo == '' and not options.delete:
+                print "! Error: '--repo' must be specified"
+                error = True
+-       if not (options.channel == "rhel4" or options.channel == "rhel5" or options.channel == "rhel6" or options.channel == "sles11"):
++       if not (options.channel == "rhel4" or options.channel == "rhel5" or options.channel == "rhel6" or options.channel == "sles11" or options.channel == "centos6" or options.channel == "centos7"):
+                print "! Error: '--channel' must be specified with a valid OS channel."
+                error = True
+        if options.only_systems and options.all_systems and not options.delete:
+@@ -179,6 +179,18 @@
+                #       'other_existing_base_channel' : { 'arch' : 'arch_type', 'subdir' : 'subdir within Dell repo' },
+                        'sles11-sp3-pool-x86_64' :  { 'arch' : 'x86_64' , 'subdir' : 'suse11_64' },
+                }
++        # CentOS 6 channels
++       elif options.channel == "centos6":
++               SUPPORTED_CHANNELS = {
++               #       'other_existing_base_channel' : { 'arch' : 'arch_type', 'subdir' : 'subdir within Dell repo' },
++                       'centos-x86_64-server-6' :  { 'arch' : 'x86_64' , 'subdir' : 'rh60_64' },
++               }
++        # CentOS 7 channels
++       elif options.channel == "centos7":
++               SUPPORTED_CHANNELS = {
++               #       'other_existing_base_channel' : { 'arch' : 'arch_type', 'subdir' : 'subdir within Dell repo' },
++                       'centos-x86_64-server-7' :  { 'arch' : 'x86_64' , 'subdir' : 'rh70_64' },
++               }
+        else:
+                # Should not really reach here, but just in case
+                print "You must provide a valid OS channel with '--channel'. Use -h or --help for details."
